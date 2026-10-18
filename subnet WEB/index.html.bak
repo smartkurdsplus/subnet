@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="docTitle">سمارت کوردس پڵەس | Smart Kurds Plus - پلاتفۆرمی دابەشکردنی تۆڕ (Subnetting)</title>
+  <meta name="description" content="ماڵپەڕ و یارییەکی پێشکەوتووی دابەشکردنی تۆڕ و سەبنێتینگ (Subnetting) بە دیزاینی فەرمی Smart Kurds Plus بۆ خوێندکارانی زانکۆ بە زمانی شیرینی کوردی.">
+  
+  <!-- Google Fonts (Kurdish & English) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Kufi+Arabic:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Vazirmatn:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/logo-transparent.png">
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=3.5">
+</head>
+<body data-page="home">
+
+  <!-- Smart Kurds Plus Interactive Parallax Background Canvas -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- ==============================================
+       ✦ 01. HEADER & NAVIGATION ✦
+       ============================================== -->
+  <header class="app-header">
+    <a href="#" class="brand-logo" id="brandLogoBtn" title="Smart Kurds Plus">
+      <div class="logo-icon">
+        <img src="assets/logo-transparent.png" alt="Smart Kurds Plus Brand Emblem">
+      </div>
+      <div class="brand-text">
+        <h1 data-i18n="brandName">Smart Kurds Plus</h1>
+        <span data-i18n="brandSub">ماستەری سەبنێتینگ و تۆڕەکان</span>
+      </div>
+    </a>
+
+    <!-- Segmented Navigation Links -->
+    <ul class="nav-links">
+      <li>
+        <button class="nav-link active" data-view="viewGames" data-i18n="tabGames">
+          <i class="fa-solid fa-gamepad"></i> <span>یارییەکانی سەبنێت</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-link" data-view="viewCalculator" data-i18n="tabCalculator">
+          <i class="fa-solid fa-calculator"></i> <span>ژمێرەری بینراو</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-link" data-view="viewGuide" data-i18n="tabGuide">
+          <i class="fa-solid fa-book-open"></i> <span>یاساکانی زانکۆ</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-link" data-view="viewCertificate" data-i18n="tabCertificate">
+          <i class="fa-solid fa-graduation-cap"></i> <span>بڕوانامەی ئەکادیمی</span>
+        </button>
+      </li>
+    </ul>
+
+    <!-- Header Actions -->
+    <div class="nav-actions">
+      <!-- Sound FX Toggle -->
+      <button class="btn-theme" id="soundToggleBtn" title="دەنگ / Sound">
+        <i class="fa-solid fa-volume-high"></i>
+      </button>
+
+      <!-- Settings Drawer Trigger -->
+      <button class="btn-theme" id="settingsToggleNav" title="ڕێکخستنەکان / Settings">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+
+      <!-- Student XP Badge -->
+      <div class="student-xp-pill" id="studentXpBadge" title="خاڵی ئەزموونی فێرخواز">
+        <i class="fa-solid fa-bolt" style="color: var(--accent-gold);"></i>
+        <span class="xp-val" id="playerXpDisplay">0</span> XP
+        <span style="color: var(--text-dim);">•</span>
+        <span id="playerRankBadge" data-i18n="rankBeginner" style="color: var(--accent-cyan); font-weight: 700;">قوتابی سەرەتایی</span>
+        <span style="color: var(--text-muted); font-size: 0.8rem;">(ئاستی <span id="playerLevelDisplay">1</span>)</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==============================================
+       ✦ 02. SETTINGS DRAWER (Smart Kurds Plus Customizer) ✦
+       ============================================== -->
+  <button class="floating-settings-btn" id="floatingSettingsBtn" title="ڕێکخستنەکان / Settings">
+    <i class="fa-solid fa-sliders"></i>
+  </button>
+
+  <div class="settings-overlay" id="settingsOverlay"></div>
+
+  <aside class="settings-drawer" id="settingsDrawer" aria-label="Settings Panel">
+    <div class="settings-drawer-header">
+      <div class="settings-drawer-title">
+        <div class="settings-title-icon"><i class="fa-solid fa-sliders"></i></div>
+        <div>
+          <h3 data-i18n="settingsTitle">ڕێکخستنەکانی ماڵپەڕ</h3>
+          <span class="settings-subtitle">Personalize your experience</span>
+        </div>
+      </div>
+      <button class="settings-close-btn" id="settingsCloseBtn" title="داخستن">&times;</button>
+    </div>
+
+    <div class="settings-drawer-body">
+      <!-- 1. Language Section -->
+      <div class="settings-group">
+        <label class="settings-group-label">
+          <i class="fa-solid fa-globe"></i>
+          <span data-i18n="settingsLangLabel">زمانی ماڵپەڕ (Language)</span>
+        </label>
+        <div class="lang-switch-grid">
+          <button class="lang-card active" data-lang="ckb">
+            <span style="font-size: 1.4rem;">☀️</span>
+            <div>
+              <strong>کوردی (سۆرانی)</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Central Kurdish</div>
+            </div>
+          </button>
+          <button class="lang-card" data-lang="en">
+            <span style="font-size: 1.4rem;">🌐</span>
+            <div>
+              <strong>English</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">ئینگلیزی</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Font Section -->
+      <div class="settings-group">
+        <label class="settings-group-label">
+          <i class="fa-solid fa-font"></i>
+          <span data-i18n="settingsFontLabel">فۆنتی نووسین (Typography)</span>
+        </label>
+        <div class="font-switch-grid">
+          <button class="font-card active" data-font="noto-kufi" style="font-family: var(--font-noto-kufi);">
+            <span>نۆتۆ کوفی (Noto Kufi)</span>
+            <small style="color: var(--text-muted);">Default / Tech</small>
+          </button>
+          <button class="font-card" data-font="vazirmatn" style="font-family: var(--font-vazirmatn);">
+            <span>ڤەزیرمەتن (Vazirmatn)</span>
+            <small style="color: var(--text-muted);">Modern</small>
+          </button>
+          <button class="font-card" data-font="noto-sans" style="font-family: var(--font-noto-sans);">
+            <span>نۆتۆ سانز (Noto Sans)</span>
+            <small style="color: var(--text-muted);">Official</small>
+          </button>
+          <button class="font-card" data-font="inter" style="font-family: var(--font-inter);">
+            <span>Inter (Latin)</span>
+            <small style="color: var(--text-muted);">UI Font</small>
+          </button>
+          <button class="font-card" data-font="outfit" style="font-family: var(--font-outfit);">
+            <span>Outfit (Tech)</span>
+            <small style="color: var(--text-muted);">Display</small>
+          </button>
+        </div>
+
+        <!-- Font Size Scale -->
+        <label class="settings-group-label" style="margin-top: 1rem;">
+          <i class="fa-solid fa-text-height"></i>
+          <span>قەبارەی دەق (Text Size)</span>
+        </label>
+        <div class="size-switch-group">
+          <button class="size-btn" data-size="92%">92%</button>
+          <button class="size-btn active" data-size="100%">100%</button>
+          <button class="size-btn" data-size="108%">108%</button>
+          <button class="size-btn" data-size="116%">116%</button>
+        </div>
+      </div>
+
+      <!-- 3. Accent Color Section -->
+      <div class="settings-group">
+        <label class="settings-group-label">
+          <i class="fa-solid fa-palette"></i>
+          <span>ڕەنگی سەرەکی دیزاین (Accent Color)</span>
+        </label>
+        <div class="accent-palette-grid">
+          <button class="color-swatch active" data-color="#3a86ff" style="--c: #3a86ff;" title="Electric Blue"></button>
+          <button class="color-swatch" data-color="#00f5d4" style="--c: #00f5d4;" title="Cyan"></button>
+          <button class="color-swatch" data-color="#ff007f" style="--c: #ff007f;" title="Neon Pink"></button>
+          <button class="color-swatch" data-color="#10b981" style="--c: #10b981;" title="Emerald"></button>
+          <button class="color-swatch" data-color="#ffb703" style="--c: #ffb703;" title="Golden Amber"></button>
+          <button class="color-swatch" data-color="#8b5cf6" style="--c: #8b5cf6;" title="Violet"></button>
+          <button class="color-swatch" data-color="#ff5400" style="--c: #ff5400;" title="Solar Orange"></button>
+        </div>
+      </div>
+
+      <!-- 4. Theme Preset Section -->
+      <div class="settings-group">
+        <label class="settings-group-label">
+          <i class="fa-solid fa-moon"></i>
+          <span>ڕووکاری ماڵپەڕ (Theme)</span>
+        </label>
+        <div class="theme-switch-grid">
+          <button class="theme-card active" data-theme="dark">
+            <span class="theme-preview dark-preview"></span>
+            <span>تاریک (Dark)</span>
+          </button>
+          <button class="theme-card" data-theme="cyber">
+            <span class="theme-preview cyber-preview"></span>
+            <span>سایبەر (Cyber)</span>
+          </button>
+          <button class="theme-card" data-theme="emerald">
+            <span class="theme-preview emerald-preview"></span>
+            <span>زمڕوت (Emerald)</span>
+          </button>
+          <button class="theme-card" data-theme="sapphire">
+            <span class="theme-preview sapphire-preview"></span>
+            <span>شین (Sapphire)</span>
+          </button>
+          <button class="theme-card" data-theme="amethyst">
+            <span class="theme-preview amethyst-preview"></span>
+            <span>مۆر (Amethyst)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Reset Button -->
+      <button class="btn-reset-settings" id="btnResetSettings">
+        <i class="fa-solid fa-rotate-left"></i>
+        <span>گەڕانەوە بۆ ڕێکخستنی بنەڕەتی</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==============================================
+       ✦ 03. HERO & STATS BANNER (SMART KURDS PLUS SIGNATURE) ✦
+       ============================================== -->
+  <section class="hero-section" id="hero">
+    <div class="hero-badge" data-i18n="heroBadge">
+      <i class="fa-solid fa-atom"></i> ناوەندی تەکنەلۆژیا و ماستەری سەبنێتینگ | Smart Kurds Plus
+    </div>
+    <h1 class="hero-title" data-i18n="heroTitle">
+      ماستەری سەبنێتینگ <span>زانستە، خێراییە، کارامەییە</span>
+    </h1>
+    <p class="hero-subtitle" data-i18n="heroSubtitle">
+      سمارت کوردس پڵەس (Smart Kurds Plus) پلاتفۆرمێکی پێشکەوتووی دابەشکردنی تۆڕ و سەبنێتینگی کارلێککارە؛ تەرخانکراوە بۆ فێربوونی قووڵی VLSM، ژمێرەری بینراو، ماتریکسی باینەری و تاقیکردنەوەی خێرا بۆ خوێندکاران و مامۆستایانی زانکۆ بە زمانی شیرینی کوردی.
+    </p>
+
+    <div class="hero-buttons">
+      <button type="button" class="btn-cta hero-nav-btn" data-target="viewGames" data-i18n="heroBtnPlay">
+        <i class="fa-solid fa-gamepad"></i> دەستپێکردنی یارییەکان
+      </button>
+      <button type="button" class="btn-outline hero-nav-btn" data-target="viewCalculator" data-i18n="heroBtnCalc">
+        <i class="fa-solid fa-calculator"></i> ژمێرەری بینراو
+      </button>
+      <button type="button" class="btn-outline hero-nav-btn" data-target="viewGuide" data-i18n="heroBtnGuide">
+        <i class="fa-solid fa-book-open"></i> یاساکانی زانکۆ
+      </button>
+      <button type="button" class="btn-outline hero-nav-btn" data-target="viewCertificate" data-i18n="heroBtnCert">
+        <i class="fa-solid fa-graduation-cap"></i> بڕوانامەی ئەکادیمی
+      </button>
+    </div>
+
+    <!-- Live Stats Grid -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-number">4</div>
+        <div class="stat-label" data-i18n="statModes">مۆدی یاری کارلێککار</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">/8 - /30</div>
+        <div class="stat-label" data-i18n="statRange">مەودای ماسک و CIDR</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label" data-i18n="statVisual">شیکاری بینراوی باینەری</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">Web Audio</div>
+        <div class="stat-label" data-i18n="statAudio">دەنگی هۆشمەندی سینتسایزەر</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==============================================
+       ✦ 04. MAIN APPLICATION VIEWS ✦
+       ============================================== -->
+  <main class="main-content">
+
+    <!-- Interactive Suite Header -->
+    <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+      <span class="section-tag" data-i18n="suiteTag">دەروازەی کارلێککاری سەبنێتینگ</span>
+      <h2 class="section-title" data-i18n="suiteTitle">یارییەکان و ژمێرەری زیرەکی دابەشکردنی تۆڕ</h2>
+    </div>
+
+    <!-- ================= VIEW 1: GAMES ================= -->
+    <section class="app-view active" id="viewGames">
+      
+      <!-- Submode Selector Cards -->
+      <div class="submode-selector">
+        <button class="game-submode-btn active" data-mode="slicer">
+          <span class="submode-title" data-i18n="gameSlicer"><i class="fa-solid fa-network-wired" style="color: var(--accent-cyan); margin-left: 6px;"></i> بڕەری تۆڕ (Subnet Slicer)</span>
+          <span class="submode-desc" data-i18n="gameSlicerDesc">تۆڕە گەورەکە پارچە بکە و بەپێی پێویستی بەشەکانی زانکۆ ئایپیەکان دابەش بکە بێ ئەوەی بەفیڕۆ بچێت!</span>
+        </button>
+        <button class="game-submode-btn" data-mode="speed">
+          <span class="submode-title" data-i18n="gameSpeed"><i class="fa-solid fa-bolt" style="color: var(--accent-gold); margin-left: 6px;"></i> پێشبڕکێی خێرایی (Speed Subnet)</span>
+          <span class="submode-desc" data-i18n="gameSpeedDesc">لە کاتێکی دیاریکراودا بە خێرایی ناونیشانی تۆڕ، برۆدکاست و ماسک بدۆزەرەوە و کۆمبۆ تۆمار بکە!</span>
+        </button>
+        <button class="game-submode-btn" data-mode="binary">
+          <span class="submode-title" data-i18n="gameBinary"><i class="fa-solid fa-microchip" style="color: var(--accent-emerald); margin-left: 6px;"></i> ماتریکسی باینەری (Binary Matrix)</span>
+          <span class="submode-desc" data-i18n="gameBinaryDesc">بیتەکان (0 و 1) بە دەستی بگۆڕە و سنووری تۆڕ و هۆست بە شێوەیەکی کرداری تێبگە!</span>
+        </button>
+        <button class="game-submode-btn" data-mode="quiz">
+          <span class="submode-title" data-i18n="gameQuiz"><i class="fa-solid fa-graduation-cap" style="color: var(--accent-purple); margin-left: 6px;"></i> تاقیکردنەوەی زانکۆ (Exam Arena)</span>
+          <span class="submode-desc" data-i18n="gameQuizDesc">پرسیارە گرنگەکانی تاقیکردنەوەی وەرزی زانکۆ لەسەر سەبنێتینگ بە شیکاری هەنگاو بە هەنگاو!</span>
+        </button>
+      </div>
+
+      <!-- PANEL 1: SUBNET SLICER -->
+      <div class="game-panel active" id="panel_slicer">
+        <div class="cyber-card">
+          <div class="slicer-top-bar">
+            <div>
+              <h2 class="card-title" id="slicerLevelTitle">ئاستی ١: تاقیگەکانی کۆلێژی زانست</h2>
+              <p class="card-subtitle" data-i18n="slicerGoal">ئەرکی تۆ: تۆڕی سەرەکی دابەش بکە بۆ بەشەکانی زانکۆ بە کەمترین بەفیڕۆدانی ئایپی (VLSM)</p>
+            </div>
+            <div class="slicer-master-box">
+              <span data-i18n="masterNetwork">تۆڕی سەرەکی (Master Network):</span>
+              <span class="master-badge" id="slicerMasterBlock">192.168.1.0/24</span>
+            </div>
+          </div>
+
+          <!-- Slicer Visual Bar -->
+          <div class="slicer-timeline-wrapper">
+            <div class="slicer-timeline-label" style="display: flex; justify-content: space-between; font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+              <span>نەخشەی دابەشبوونی بلۆکەکان لە کات و بۆشایی تۆڕدا (Address Space):</span>
+              <span id="slicerBarUsage">0%</span>
+            </div>
+            <div class="slicer-timeline-bar" id="slicerVisualBar">
+              <!-- Dynamically populated chunks -->
+            </div>
+          </div>
+
+          <!-- Departments to Allocate -->
+          <h3 style="font-size: 1.05rem; margin-bottom: 0.8rem;" data-i18n="departmentsNeeded">بەشە داواکراوەکان:</h3>
+          <div class="slicer-dept-grid" id="slicerDeptList">
+            <!-- Dynamically generated department cards -->
+          </div>
+
+          <!-- Simulation / Verification Feedback -->
+          <div id="slicerResultDetails"></div>
+
+          <div style="display: flex; gap: 0.8rem; margin-top: 1.5rem; flex-wrap: wrap;">
+            <button class="cyber-btn primary-glow" id="slicerVerifyBtn" disabled>
+              <i class="fa-solid fa-check"></i> <span data-i18n="checkBinaryBtn">پشکنینی ئەنجام</span>
+            </button>
+            <button class="cyber-btn" id="slicerResetBtn">
+              <i class="fa-solid fa-rotate-left"></i> <span data-i18n="resetSlices">سەرلەنوێ دابەشکردنەوە</span>
+            </button>
+            <button class="cyber-btn primary-glow" id="slicerNextLvlBtn" style="display: none; background: #10b981;">
+              <i class="fa-solid fa-trophy"></i> <span data-i18n="nextLevel">ئاستی دواتر</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: SPEED SUBNETTER -->
+      <div class="game-panel" id="panel_speed">
+        <div class="cyber-card">
+          <!-- Top Stats Bar -->
+          <div class="speed-stats-bar">
+            <div class="speed-stat-box">
+              <div class="speed-stat-label" data-i18n="timeLeft">کاتی ماوە:</div>
+              <div class="speed-stat-val" style="color: var(--accent-rose);" id="speedTimerDisplay">60s</div>
+            </div>
+            <div class="speed-stat-box">
+              <div class="speed-stat-label" data-i18n="speedScore">خاڵ:</div>
+              <div class="speed-stat-val" style="color: var(--accent-gold);" id="speedScoreDisplay">0</div>
+            </div>
+            <div class="speed-stat-box">
+              <div class="speed-stat-label" data-i18n="speedStreak">کۆمبۆ:</div>
+              <div class="speed-stat-val" style="color: var(--accent-emerald);" id="speedStreakDisplay">x1</div>
+            </div>
+          </div>
+
+          <!-- Start Button Overlay / Area -->
+          <div id="speedStartBtn" style="text-align: center; padding: 3rem 1rem;">
+            <div style="font-size: 3.5rem; margin-bottom: 1rem; color: var(--accent-gold);">⚡</div>
+            <h3 style="font-size: 1.6rem; margin-bottom: 0.5rem;" data-i18n="gameSpeed">پێشبڕکێی خێرایی (Speed Subnet)</h3>
+            <p style="color: var(--text-secondary); max-width: 520px; margin: 0 auto 1.5rem;" data-i18n="gameSpeedDesc">
+              لە کاتێکی دیاریکراودا بە خێرایی ناونیشانی تۆڕ، برۆدکاست و ماسک بدۆزەرەوە و کۆمبۆ تۆمار بکە!
+            </p>
+            <button class="cyber-btn primary-glow" style="font-size: 1.15rem; padding: 0.9rem 2.4rem;" data-i18n="startSpeedGame">
+              <i class="fa-solid fa-play"></i> دەستپێکردنی پێشبڕکێ
+            </button>
+          </div>
+
+          <!-- Active Question Play Area -->
+          <div id="speedPlayArea" style="display: none;">
+            <div class="speed-target-card">
+              <div class="speed-prompt-text" id="speedPromptText" data-i18n="findThis">بە شێوەیەکی خێرا دیاری بکە:</div>
+              <div class="speed-ip-display" id="speedTargetIp">192.168.1.50 /26</div>
+            </div>
+
+            <div class="speed-options-grid" id="speedOptionsGrid">
+              <!-- Dynamically populated 4 options -->
+            </div>
+
+            <div style="text-align: center; margin-top: 1rem;">
+              <button class="cyber-btn" id="speedPassBtn" style="color: var(--text-dim);" data-i18n="btnPass">
+                <i class="fa-solid fa-forward"></i> تێپەڕاندن (-٥ چرکە)
+              </button>
+            </div>
+          </div>
+
+          <!-- Game Over Area -->
+          <div id="speedGameOverArea" style="display: none; text-align: center; padding: 2.5rem 1rem;">
+            <div style="font-size: 3.5rem; margin-bottom: 0.8rem; color: var(--accent-rose);">⌛</div>
+            <h3 style="font-size: 1.8rem; color: var(--accent-rose); margin-bottom: 0.8rem;" data-i18n="speedGameOver">کاتی یاری تەواو بوو!</h3>
+            <p style="font-size: 1.1rem; margin-bottom: 0.4rem;">
+              <span data-i18n="yourFinalScore">کۆی خاڵەکانت:</span> 
+              <strong id="speedFinalScore" style="color: var(--accent-gold); font-size: 1.6rem;">0</strong>
+            </p>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+              <span data-i18n="bestScore">بەرزترین تۆمار:</span> 
+              <strong id="speedBestScore" style="color: var(--accent-cyan);">0</strong>
+            </p>
+            <button class="cyber-btn primary-glow" id="speedRestartBtn" data-i18n="playAgain">
+              <i class="fa-solid fa-rotate-left"></i> دووبارە یاری بکەرەوە
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 3: BINARY MATRIX -->
+      <div class="game-panel" id="panel_binary">
+        <div class="cyber-card">
+          <div class="binary-matrix-header">
+            <div>
+              <h2 class="card-title" data-i18n="gameBinary">ماتریکسی باینەری (Binary Matrix)</h2>
+              <p class="card-subtitle" data-i18n="binaryTargetDesc">ئامانج: پێشگری داواکراو ڕێکبخە بە گۆڕینی بیتەکانی ماسک لە (0) بۆ (1) یان پێچەوانەکەی:</p>
+            </div>
+            <div style="text-align: center;">
+              <span style="font-size: 0.85rem; color: var(--text-muted);" data-i18n="targetCidr">پێشگری ئامانج:</span>
+              <div class="target-cidr-display" id="binaryTargetCidr">/26</div>
+            </div>
+          </div>
+
+          <!-- 4 Octets with 8 bits each -->
+          <div class="binary-octets-container" id="binaryOctetContainer">
+            <!-- Dynamically populated 32 interactive bits -->
+          </div>
+
+          <!-- Live binary calculation stats -->
+          <div class="binary-live-stats">
+            <div class="live-stat-card">
+              <div class="lbl" data-i18n="currentMask">ماسکی ئێستا:</div>
+              <div class="val" id="binaryCurrentMask">255.255.255.0</div>
+            </div>
+            <div class="live-stat-card">
+              <div class="lbl" data-i18n="networkBits">بیتەکانی تۆڕ (1):</div>
+              <div class="val" id="binaryNetBitsCount">24</div>
+            </div>
+            <div class="live-stat-card">
+              <div class="lbl" data-i18n="hostBits">بیتەکانی هۆست (0):</div>
+              <div class="val" id="binaryHostBitsCount">8</div>
+            </div>
+            <div class="live-stat-card">
+              <div class="lbl" data-i18n="usableHostsCount">هۆستە کارپێکراوەکان (2^h - 2):</div>
+              <div class="val" id="binaryUsableHosts">254</div>
+            </div>
+          </div>
+
+          <div id="binaryStatusMsg" style="margin-bottom: 1.2rem; min-height: 28px;"></div>
+
+          <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+            <button class="cyber-btn primary-glow" id="binaryCheckBtn">
+              <i class="fa-solid fa-bolt"></i> <span data-i18n="checkBinaryBtn">پشکنینی ئەنجام</span>
+            </button>
+            <button class="cyber-btn" id="binaryNextBtn">
+              <i class="fa-solid fa-dice"></i> <span>ئامانجی نوێ (New Challenge)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 4: EXAM ARENA -->
+      <div class="game-panel" id="panel_quiz">
+        <div class="cyber-card">
+          <div class="quiz-header">
+            <div>
+              <h2 class="card-title" data-i18n="gameQuiz">تاقیکردنەوەی زانکۆ (Exam Arena)</h2>
+              <p class="card-subtitle" data-i18n="gameQuizDesc">پرسیارە گرنگەکانی تاقیکردنەوەی وەرزی زانکۆ لەسەر سەبنێتینگ بە شیکاری هەنگاو بە هەنگاو!</p>
+            </div>
+            <div class="quiz-counter-badge" id="quizCounter">پرسیاری ١ / ٥</div>
+          </div>
+
+          <div class="quiz-question-card">
+            <div class="quiz-q-text" id="quizQuestionText"></div>
+            <div class="quiz-options-grid" id="quizOptionsGrid"></div>
+
+            <div class="quiz-explanation-box" id="quizExplanationBox" style="display: none;">
+              <h4 data-i18n="explanationTitle" style="color: var(--accent-cyan); margin-bottom: 0.4rem;">ڕوونکردنەوە و شیکاری هەنگاو بە هەنگاو:</h4>
+              <p id="quizExplanationText"></p>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: left;">
+              <button class="cyber-btn primary-glow" id="quizNextBtn" style="display: none;" data-i18n="nextQuestion">
+                پرسیاری دواتر <i class="fa-solid fa-arrow-left"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= VIEW 2: CALCULATOR ================= -->
+    <section class="app-view" id="viewCalculator">
+      <div class="cyber-card">
+        <h2 class="card-title" data-i18n="calcHeading"><i class="fa-solid fa-calculator" style="color: var(--accent-cyan);"></i> ژمێرەر و شیکاری بینراوی سەبنێتینگ</h2>
+        <p class="card-subtitle" data-i18n="calcSubheading">هەر ئایپی و پێشگرێک دابنێ تاوەکو بە شێوەیەکی گرافیکی و بینراو هەموو وردەکارییەکانی ببینی</p>
+
+        <!-- Inputs Row -->
+        <div class="calc-inputs-bar">
+          <div class="form-group">
+            <label for="calcIpInput" data-i18n="inputIpLabel">ناونیشانی ئایپی (IPv4):</label>
+            <input type="text" id="calcIpInput" class="cyber-input" value="192.168.10.68" placeholder="192.168.1.1">
+          </div>
+          <div class="form-group">
+            <label for="calcCidrSelect" data-i18n="inputCidrLabel">پێشگری ماسک (CIDR):</label>
+            <select id="calcCidrSelect" class="cyber-select" style="padding: 0.85rem 1rem; border-radius: var(--radius-md);">
+              <option value="30">/30 (255.255.255.252) - 2 Hosts</option>
+              <option value="29">/29 (255.255.255.248) - 6 Hosts</option>
+              <option value="28">/28 (255.255.255.240) - 14 Hosts</option>
+              <option value="27">/27 (255.255.255.224) - 30 Hosts</option>
+              <option value="26" selected>/26 (255.255.255.192) - 62 Hosts</option>
+              <option value="25">/25 (255.255.255.128) - 126 Hosts</option>
+              <option value="24">/24 (255.255.255.0) - 254 Hosts</option>
+              <option value="23">/23 (255.255.254.0) - 510 Hosts</option>
+              <option value="22">/22 (255.255.252.0) - 1022 Hosts</option>
+              <option value="21">/21 (255.255.248.0) - 2046 Hosts</option>
+              <option value="20">/20 (255.255.240.0) - 4094 Hosts</option>
+              <option value="19">/19 (255.255.224.0) - 8190 Hosts</option>
+              <option value="18">/18 (255.255.192.0) - 16382 Hosts</option>
+              <option value="17">/17 (255.255.128.0) - 32766 Hosts</option>
+              <option value="16">/16 (255.255.0.0) - 65534 Hosts</option>
+              <option value="12">/12 (255.240.0.0) - 1M Hosts</option>
+              <option value="8">/8 (255.0.0.0) - 16M Hosts</option>
+            </select>
+          </div>
+          <div>
+            <button class="cyber-btn primary-glow" id="calcSubmitBtn" style="height: 52px; width: 100%;" data-i18n="btnCalculate">
+              <i class="fa-solid fa-magnifying-glass"></i> شیکارکردنی تۆڕ
+            </button>
+          </div>
+        </div>
+
+        <!-- Calculated Summary Grid -->
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.8rem;" data-i18n="netSummary">کورتەی ئەنجامەکان</h3>
+        <div class="calc-summary-grid">
+          <div class="summary-card">
+            <div class="lbl" data-i18n="networkAddress">ناونیشانی تۆڕ (Network ID):</div>
+            <div class="val" id="resNetAddress">-</div>
+          </div>
+          <div class="summary-card">
+            <div class="lbl" data-i18n="broadcastAddress">ناونیشانی پەخش (Broadcast):</div>
+            <div class="val" id="resBroadcast">-</div>
+          </div>
+          <div class="summary-card">
+            <div class="lbl" data-i18n="firstUsable">یەکەم ئایپی کارپێکراو:</div>
+            <div class="val" id="resFirstUsable">-</div>
+          </div>
+          <div class="summary-card">
+            <div class="lbl" data-i18n="lastUsable">کۆتا ئایپی کارپێکراو:</div>
+            <div class="val" id="resLastUsable">-</div>
+          </div>
+          <div class="summary-card">
+            <div class="lbl" data-i18n="subnetMaskLabel">ماسکی سەبنێت (Subnet Mask):</div>
+            <div class="val" id="resMask">-</div>
+          </div>
+          <div class="summary-card">
+            <div class="lbl" data-i18n="wildcardMaskLabel">ماسکی وایڵدکارد (Wildcard):</div>
+            <div class="val" id="resWildcard">-</div>
+          </div>
+          <div class="summary-card">
+            <div class="lbl" data-i18n="usableHostsCount">هۆستە کارپێکراوەکان:</div>
+            <div class="val" id="resUsableHosts">-</div>
+          </div>
+          <div class="summary-card">
+            <div class="lbl" data-i18n="magicNumberTitle">ژمارەی سیحری (Magic Number):</div>
+            <div class="val" id="resMagicNumber">-</div>
+          </div>
+          <div class="summary-card">
+            <div class="lbl" data-i18n="ipClassLabel">پۆلی ئایپی (IP Class):</div>
+            <div class="val" id="resClass">-</div>
+          </div>
+        </div>
+
+        <!-- Binary Breakdown Inspector -->
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.8rem;" data-i18n="binaryBreakdown">شیکاری باینەری (Binary Breakdown)</h3>
+        <div id="calcBinaryContainer">
+          <!-- Dynamically populated binary bit visualization -->
+        </div>
+
+        <!-- Subnets division table -->
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.8rem;" data-i18n="allSubnetsVisualizer">نەخشەی هەموو سەبنێتەکانی ئەم سنوورە:</h3>
+        <div class="table-responsive">
+          <table class="cyber-table">
+            <thead>
+              <tr>
+                <th data-i18n="subnetColIndex">#</th>
+                <th data-i18n="subnetColNet">تۆڕ (Network)</th>
+                <th data-i18n="subnetColRange">مەودای بەکارهێنەران</th>
+                <th data-i18n="subnetColBcast">پەخش (Broadcast)</th>
+                <th data-i18n="subnetColHosts">هۆست</th>
+              </tr>
+            </thead>
+            <tbody id="calcSubnetsTableBody">
+              <!-- Dynamically populated table rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: UNIVERSITY GUIDE & FORMULAS ================= -->
+    <section class="app-view" id="viewGuide">
+      <div class="cyber-card">
+        <h2 class="card-title" data-i18n="guideTitle"><i class="fa-solid fa-book" style="color: var(--accent-cyan);"></i> یاساکانی زانکۆ بۆ دابەشکردنی تۆڕ (Subnetting Guide)</h2>
+        <p class="card-subtitle" style="line-height: 1.8;" data-i18n="guideIntro">
+          سەبنێتینگ (Subnetting) واتە دابەشکردنی تۆڕێکی گەورەی فیزیکی یان لۆجیکی بۆ چەند تۆڕێکی بچووکتر و سەربەخۆتر بە مەبەستی ڕێکخستنی ئاسایش، کەمکردنەوەی جەنجاڵی پەخش (Broadcast Storm)، و پاراستنی ئایپییەکان لە بەفیڕۆچوون.
+        </p>
+
+        <div class="guide-formula-card">
+          <h3 data-i18n="formula1Title">١. یاسای ژمارەی هۆستە بەکارهێنراوەکان:</h3>
+          <div class="formula-highlight">Usable Hosts = (2^h) - 2</div>
+          <p data-i18n="formula1Desc">
+            ژمارەی هۆست = (2 لەسەری h) کەمکردنەوەی 2. لێرەدا (h) بریتییە لە ژمارەی ئەو بیتانەی هێشتا سفرن (بیتەکانی هۆست). بۆچی کەمکردنەوەی دوو؟ چونکە یەکەم ناونیشان بۆ تۆڕە (Network ID) و کۆتا ناونیشان بۆ پەخشە (Broadcast ID).
+          </p>
+        </div>
+
+        <div class="guide-formula-card">
+          <h3 data-i18n="formula2Title">٢. یاسای ژمارەی سەبنێتەکان:</h3>
+          <div class="formula-highlight">Number of Subnets = 2^n</div>
+          <p data-i18n="formula2Desc">
+            ژمارەی سەبنێت = (2 لەسەری n). لێرەدا (n) بریتییە لەو بیتانەی لە بەشی هۆست قەرز کراون بۆ دروستکردنی تۆڕە نوێیەکان.
+          </p>
+        </div>
+
+        <div class="guide-formula-card">
+          <h3 data-i18n="formula3Title">٣. ڕێگای خێرای ژمارەی سیحری (Magic Number Method):</h3>
+          <div class="formula-highlight">Magic Number = 256 - Mask Octet</div>
+          <p data-i18n="formula3Desc">
+            بۆ دۆزینەوەی هەنگاوی بازدانی سەبنێتەکان: ژمارە ٢٥٦ دەهێنیت و بەهای ئەو ئۆکتێتەی ماسکەکەی لێ کەم دەکەیتەوە کە دەستکاری کراوە. بۆ نموونە بۆ ماسکی 255.255.255.224، ژمارەی سیحری = 256 - 224 = 32. کەواتە سەبنێتەکان ٣٢ بە ٣٢ زیاد دەکەن (0، 32، 64، 96، ...).
+          </p>
+        </div>
+
+        <h3 style="margin: 2rem 0 1rem; font-size: 1.15rem;" data-i18n="cidrTableTitle">خشتەی بەراوردی خێرای CIDR لە /24 بۆ /30:</h3>
+        <div class="table-responsive">
+          <table class="cyber-table">
+            <thead>
+              <tr>
+                <th>CIDR</th>
+                <th>Subnet Mask</th>
+                <th>Binary (Last Octet)</th>
+                <th>Magic #</th>
+                <th>Total IPs</th>
+                <th>Usable Hosts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>/24</td><td>255.255.255.0</td><td>00000000</td><td>256</td><td>256</td><td>254</td></tr>
+              <tr><td>/25</td><td>255.255.255.128</td><td>10000000</td><td>128</td><td>128</td><td>126</td></tr>
+              <tr><td>/26</td><td>255.255.255.192</td><td>11000000</td><td>64</td><td>64</td><td>62</td></tr>
+              <tr><td>/27</td><td>255.255.255.224</td><td>11100000</td><td>32</td><td>32</td><td>30</td></tr>
+              <tr><td>/28</td><td>255.255.255.240</td><td>11110000</td><td>16</td><td>16</td><td>14</td></tr>
+              <tr><td>/29</td><td>255.255.255.248</td><td>11111000</td><td>8</td><td>8</td><td>6</td></tr>
+              <tr><td>/30</td><td>255.255.255.252</td><td>11111100</td><td>4</td><td>4</td><td>2 (Point-to-Point)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 4: UNIVERSITY CERTIFICATE ================= -->
+    <section class="app-view" id="viewCertificate">
+      <div class="cyber-card">
+        <div id="certControlsArea" style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+          <div style="flex: 1; min-width: 250px;">
+            <label style="display: block; font-size: 0.9rem; margin-bottom: 0.4rem; color: var(--text-secondary);">
+              ناوی فێرخواز یان بەشداربوو بنووسە:
+            </label>
+            <input type="text" id="certStudentNameInput" class="cyber-input" placeholder="ناوی چواری خۆت بنووسە...">
+          </div>
+          <div>
+            <button class="cyber-btn primary-glow" id="certPrintBtn">
+              <i class="fa-solid fa-print"></i> <span>چاپکردنی بڕوانامە (Print / PDF)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Academic Certificate Display Frame -->
+        <div class="cert-preview-wrapper">
+          <div class="academic-certificate-frame">
+            <div class="cert-corner-ornament top-left"></div>
+            <div class="cert-corner-ornament top-right"></div>
+            <div class="cert-corner-ornament bottom-left"></div>
+            <div class="cert-corner-ornament bottom-right"></div>
+            <div class="cert-watermark-seal">SMART KURDS PLUS ✦ VERIFIED</div>
+
+            <div class="cert-emblem">🎓</div>
+            <h2 class="cert-main-title" data-i18n="certTitle">بڕوانامەی لێهاتوویی لە سەبنێتینگ</h2>
+            <div class="cert-sub-text" data-i18n="certSubtitle">ئەم بەڵگەنامەیە دەبەخشرێت بە فێرخواز:</div>
+
+            <div class="cert-student-name" id="certRecipientName">خوێندکاری بەشی کۆمپیوتەر</div>
+
+            <p class="cert-statement" data-i18n="certBody">
+              بەهۆی نیشاندانی شارەزایی تەواو لە تیۆری و کرداری سەبنێتینگی تۆڕ، هەژمارکردنی ماسک، دۆزینەوەی برۆدکاست و بەکارهێنانی VLSM بە سەرکەوتوویی لە پڕۆژەی ماستەری سەبنێت.
+            </p>
+
+            <div style="margin-bottom: 1.5rem;">
+              <span class="badge-tag" id="certScoreBadge" style="font-size: 1rem; padding: 0.4rem 1.2rem;">XP: 0 | ئاست: 1</span>
+            </div>
+
+            <div class="cert-footer-row">
+              <div class="cert-signature-block">
+                <div class="cert-sig-line"></div>
+                <div class="cert-sig-title" data-i18n="certVerifiedBy">پشتڕاستکراوە لەلایەن مامۆستای تۆڕەکانی زانکۆ</div>
+              </div>
+              <div style="color: var(--text-muted); font-size: 0.88rem;" id="certIssuedDate">
+                بەرواری دەرچوون: -
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==============================================
+       ✦ 05. FOOTER (SMART KURDS PLUS SIGNATURE) ✦
+       ============================================== -->
+  <footer class="app-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="brand-logo" title="Smart Kurds Plus">
+          <div class="logo-icon">
+            <img src="assets/logo-transparent.png" alt="Smart Kurds Plus Brand Emblem">
+          </div>
+          <div class="brand-text">
+            <h1 data-i18n="brandName">Smart Kurds Plus</h1>
+            <span data-i18n="brandSub">ماستەری سەبنێتینگ و تۆڕەکان</span>
+          </div>
+        </a>
+        <p data-i18n="footerDesc">پلاتفۆرمی فەرمی و پێشەنگی فێربوونی دابەشکردنی تۆڕ و سەبنێتینگ (Subnetting) بە دیزاینی پڕۆفێشناڵی Smart Kurds Plus بۆ خوێندکاران و مامۆستایانی زانکۆ لە کوردستان.</p>
+        <div class="social-icons">
+          <a href="https://github.com" target="_blank" rel="noopener" class="social-icon" title="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="https://twitter.com" target="_blank" rel="noopener" class="social-icon" title="Twitter / X"><i class="fa-brands fa-twitter"></i></a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-icon" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="https://t.me" target="_blank" rel="noopener" class="social-icon" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="footer-title" data-i18n="footerMainLinks">بەشە سەرەکییەکان</h4>
+        <ul class="footer-links">
+          <li><button type="button" class="footer-nav-link" data-target="viewGames"><i class="fa-solid fa-gamepad"></i> <span data-i18n="tabGames">یارییەکانی سەبنێت</span></button></li>
+          <li><button type="button" class="footer-nav-link" data-target="viewCalculator"><i class="fa-solid fa-calculator"></i> <span data-i18n="tabCalculator">ژمێرەری بینراو</span></button></li>
+          <li><button type="button" class="footer-nav-link" data-target="viewGuide"><i class="fa-solid fa-book-open"></i> <span data-i18n="tabGuide">یاساکانی زانکۆ</span></button></li>
+          <li><button type="button" class="footer-nav-link" data-target="viewCertificate"><i class="fa-solid fa-graduation-cap"></i> <span data-i18n="tabCertificate">بڕوانامەی ئەکادیمی</span></button></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-title" data-i18n="footerTopics">چەمکەکانی تۆڕ</h4>
+        <ul class="footer-links">
+          <li><button type="button" class="footer-nav-link" data-target="viewCalculator"><i class="fa-solid fa-diagram-project"></i> <span>دابەشکردنی VLSM</span></button></li>
+          <li><button type="button" class="footer-nav-link" data-target="viewGuide"><i class="fa-solid fa-table-cells"></i> <span>خشتەی پێشگرەکانی CIDR</span></button></li>
+          <li><button type="button" class="footer-nav-link" data-target="viewGuide"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>ژمارەی سیحری (Magic Number)</span></button></li>
+          <li><button type="button" class="footer-nav-link" data-target="viewGames" data-game-mode="binary"><i class="fa-solid fa-microchip"></i> <span>ماتریکسی باینەری و AND</span></button></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div data-i18n="footerCopyright">&copy; ٢٠٢٦ ڕێکخراوی <strong>Smart Kurds Plus</strong>. هەموو مافەکانی پارێزراوە.</div>
+      <div style="display: flex; gap: 1.5rem;">
+        <a href="#" data-i18n="footerPrivacy">یاسای پاراستنی نهێنی</a>
+        <a href="#" data-i18n="footerTerms">مەرجەکانی بەکارهێنان</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div class="game-toast" id="gameToast"></div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js?v=4.2"></script>
+  <script src="js/translations.js?v=4.2"></script>
+  <script src="js/skplus-theme.js?v=4.2"></script>
+  <script src="js/subnet-engine.js?v=4.2"></script>
+  <script src="js/games.js?v=4.2"></script>
+  <script src="js/calculator.js?v=4.2"></script>
+  <script src="js/certificate.js?v=4.2"></script>
+  <script src="js/main.js?v=4.2"></script>
+</body>
+</html>
